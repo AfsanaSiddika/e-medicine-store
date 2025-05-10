@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}
+Doctor Appointments
+{% endblock %}
+
+{% block content %}
+
+
+<div class="max-w-7xl mx-auto px-4 py-6 min-h-screen">
+    <!-- Tabs -->
+    <div class="mb-6 border-b border-gray-200">
+        <ul class="flex flex-wrap -mb-px text-xl font-medium text-center" role="tablist">
+            <li class="mr-2">
+                <a href="#doctors" class="inline-block p-4 border-b-2 rounded-t-lg active bg-teal-500 text-white" data-tab="doctors">Doctors</a>
+            </li>
+            <li class="mr-2">
+                <a href="#hospitals" class="inline-block p-4 border-b-2 rounded-t-lg hover:bg-gray-100" data-tab="hospitals">Hospitals</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Tab Content -->
+    <div id="doctors" class="tab-content active">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for doctor in doctors %}
+            <div class="p-4 bg-white rounded-lg shadow-md">
+                <img src="{{ doctor.image.url }}" alt="{{ doctor.name }}" class="w-full h-40 object-contain rounded-lg">
+                <div class="mt-4">
+                    <h3 class="text-lg font-bold text-gray-800">{{ doctor.name }}</h3>
+                    <p class="text-sm font-semibold text-gray-600">{{ doctor.specialty }}</p>
+                    <p class="mt-2 text-gray-500">{{ doctor.qualifications }}</p>
+                    <a href="{% url 'doctor_details' doctor.id %}" class="block mt-2 text-center bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-800">
+                        Book Appointment
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="hospitals" class="tab-content hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for hospital in hospitals %}
+            <div class="p-4 bg-white rounded-lg shadow-md">
+                <img src="{{ hospital.logo.url }}" alt="{{ hospital.name }}" class="w-full h-40 object-contain rounded-lg">
+                <div class="mt-4">
+                    <h3 class="text-lg font-bold text-gray-800">{{ hospital.name }}</h3>
+                    <p class="text-sm text-gray-500">{{ hospital.address }}</p>
+                    <p class="mt-2 text-gray-500">Phone: {{ hospital.phone }}</p>
+                    <a href="{% url 'hospital_details' hospital.id %}" class="block mt-2 text-center bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-800">
+                        View Doctors
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabs = document.querySelectorAll('[data-tab]');
+        
+        tabs.forEach(function(tab) {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = tab.getAttribute('data-tab');
+
+                // Remove active classes from all tabs and contents
+                tabs.forEach(function(item) {
+                    item.classList.remove('active', 'border-teal-500', 'text-gray-200', 'bg-teal-500', 'text-white');
+                });
+                document.querySelectorAll('.tab-content').forEach(function(content) {
+                    content.classList.add('hidden');
+                });
+
+                // Add active class to clicked tab and show corresponding content
+                tab.classList.add('active', 'border-teal-500', 'text-gray-200', 'bg-teal-500', 'text-white');
+                document.getElementById(target).classList.remove('hidden');
+            });
+        });
+    });
+</script>
+
+{% endblock %}

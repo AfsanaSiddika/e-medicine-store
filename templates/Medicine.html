@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}
+Shop Medicine
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 sm:px-10 mt-12 mb-12 min-h-screen">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-extrabold text-teal-600">Welcome to E-Medicine Store</h1>
+        <p class="mt-4 text-lg text-gray-700">Your one-stop shop for all your healthcare needs. Discover a wide range of
+            medicines and health products at unbeatable prices!</p>
+    </div>
+    <!-- Sidebar with categories -->
+    <div class="grid grid-cols-12 gap-4">
+        <aside class="col-span-2">
+            <ul class="space-y-2">
+                <!-- Display all categories and make them clickable -->
+                <li class="bg-gray-100 p-2 rounded-lg px-4 py-4">
+                    <a href="{% url 'shopmedicine' %}"
+                        class="flex items-center text-gray-700 font-semibold hover:text-teal-500">
+                        <box-icon name='clinic' color='#4fd1c5' class='mr-2'></box-icon>
+                        All Medicines
+                    </a>
+                </li>
+                {% for category, category_name in categories %}
+                <li class="bg-gray-100 p-2 rounded-lg px-4 py-4">
+                    <a href="?category={{ category }}"
+                        class="flex items-center text-gray-700 font-semibold hover:text-teal-500">
+                        <!-- Example of using different icons for each category -->
+                        {% if category == 'Diabetic Care' %}
+                        <box-icon name='plus-medical' color='#4fd1c5' class='mr-2'></box-icon>
+                        {% elif category == 'OTC Medicine' %}
+                        <box-icon name='capsule' color='#4fd1c5' class='mr-2'></box-icon>
+                        {% elif category == 'Pain Relief' %}
+                        <box-icon name='band-aid' color='#4fd1c5' class='mr-2'></box-icon>
+                        {% elif category == 'Vitamins & Supplements' %}
+                        <box-icon name='vial' color='#4fd1c5' class='mr-2'></box-icon>
+                        {% elif category == 'Womens Care' %}
+                        <box-icon name='female' color='#4fd1c5' class='mr-2'></box-icon>
+                        {% elif category == 'Cold & Flu' %}
+                        <box-icon name='pulse' color='#4fd1c5' class='mr-2'></box-icon>
+                        {% elif category == 'Skin Care' %}
+                        <box-icon name='heart-circle' color='#4fd1c5' class='mr-2'></box-icon>
+                        {% else %}
+                        <box-icon name='first-aid' color='#4fd1c5' class='mr-2'></box-icon>
+                        {% endif %}
+                        {{ category_name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </aside>
+
+        <!-- Main section with medicines -->
+        <div class="col-span-10">
+            {% if medicines %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% for medicine in medicines %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <a href="{% url 'medicine_details' medicine.id %}" class="block">
+                        <div class="relative">
+                            <img src="{{ medicine.image.url }}" alt="{{ medicine.name }}" class="w-full h-48 object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-gray-800">{{ medicine.name }} - {{ medicine.dosage_mg }} mg</h3>
+                            <p class="text-sm text-gray-500">{{ medicine.manufacturer }}</p>
+                            <p class="mt-2 text-lg font-bold text-gray-900">৳ {{ medicine.price }}</p>
+                        </div>
+                    </a>
+                    <div class="p-4">
+                        <a href="{% url 'add_to_cart' medicine.id %}" class="block mt-2 text-center bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-800 flex items-center justify-center">
+                            <box-icon name='cart' color='#fff' class='mr-2'></box-icon>
+                            <span>Add to cart</span>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <!-- Display message if no medicines are found in the category -->
+            <p class="text-center text-gray-500 text-lg mt-10">No Medicine Here</p>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

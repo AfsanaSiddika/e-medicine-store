@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <title>{% block title %}E-Medicine Store{% endblock %}</title>
+
+    <style>
+        body {
+            font-family: "Rubik", sans-serif;
+        }
+    </style>
+
+</head>
+
+<body class="tracking-wide">
+    <header class='flex border-b py-4 px-4 sm:px-10 bg-[#0d2329] min-h-[70px] tracking-wide relative z-50 sticky top-0'>
+        <div class='flex flex-wrap items-center gap-4 w-full'>
+            <a href="{% url 'home' %}">
+                <img src="https://i.postimg.cc/3xGXxqt8/E-care-3-Final.png" alt="logo" class='w-36' />
+            </a>
+
+            <div id="collapseMenu"
+                class='lg:!flex lg:flex-auto lg:ml-12 max-lg:hidden max-lg:before:fixed max-lg:before:bg-black max-lg:before:opacity-50 max-lg:before:inset-0 max-lg:before:z-50'>
+                <button id="toggleClose"
+                    class='lg:hidden fixed top-2 right-4 z-[100] rounded-full bg-gray-900 p-3 text-white'>
+                    <box-icon name='x' color='#fff'></box-icon>
+                </button>
+
+                <div
+                    class="lg:!flex lg:flex-auto max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50">
+                    <ul class='lg:flex lg:gap-x-8 max-lg:space-y-2'>
+                        <li class='mb-6 hidden max-lg:block'>
+                            <a href="{% url 'home' %}">
+                                <img src="https://i.postimg.cc/3xGXxqt8/E-care-3-Final.png" alt="logo" class='w-36' />
+                            </a>
+                        </li>
+                        <li class='max-lg:border-b max-lg:py-3'>
+                            <a href="{% url 'home' %}"
+                                class='hover:text-teal-500 text-gray-300 block font-bold text-[15px] flex items-center'>
+                                <box-icon name='home' color='#fff' class='mr-2'></box-icon> Home
+                            </a>
+                        </li>
+                        <li class='max-lg:border-b max-lg:py-3'>
+                            <a href="{% url 'shopmedicine' %}"
+                                class='hover:text-teal-500 text-gray-300 block font-bold text-[15px] flex items-center'>
+                                <box-icon name='store' color='#fff' class='mr-2'></box-icon> Shop Medicines
+                            </a>
+                        </li>
+                        <li class='max-lg:border-b max-lg:py-3'>
+                            <a href="{% url 'appointments' %}"
+                                class='hover:text-teal-500 text-gray-300 block font-bold text-[15px] flex items-center'>
+                                <box-icon name='calendar' color='#fff' class='mr-2'></box-icon> Doctor Appointments
+                            </a>
+                        </li>
+                        <li class='max-lg:border-b max-lg:py-3'>
+                            <a href="{% url 'manage_orders' %}"
+                                class='hover:text-teal-500 text-gray-300 block font-bold text-[15px] flex items-center'>
+                                <box-icon name='cart' color='#fff' class='mr-2'></box-icon> Manage Orders
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'lab_tests' %}"
+                                class="flex items-center space-x-2 text-white hover:text-teal-400">
+                                <box-icon name='vial' color='#fff'></box-icon><span>Lab Test</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'emergency_ambulance' %}"
+                                class="flex items-center space-x-2 text-white hover:text-teal-400">
+                                <box-icon name='ambulance' type='solid' color='#ffffff'></box-icon><span>Emergency Ambulance</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-l border-[#333] h-6 max-lg:hidden"></div>
+
+            <div class='flex items-center ml-auto space-x-6'>
+                {% if user.is_authenticated %}
+                  <!-- Show username and logout button when authenticated -->
+                  <a href="{% url 'user_profile' %}" class='text-teal-500 text-gray-200 block font-bold text-[15px] flex items-center'>
+                    <box-icon name='user' color='#fff' class='mr-2'></box-icon>
+                    {{ user.username }}
+                </a>
+                  
+                  <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit"
+                      class='px-4 py-2.5 text-sm rounded font-bold text-white border-2 border-[#1d294f] bg-[#1d294f] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-teal-400 flex items-center'>
+                      <box-icon name='log-out' color='#fff' class='mr-2'></box-icon> 
+                      Logout
+                    </button>
+                  </form>
+              
+                {% else %}
+                  <!-- Show login and signup links when not authenticated -->
+                  <a href="{% url 'login' %}" class='hover:text-teal-500 text-gray-200 block font-bold text-[15px] flex items-center'>
+                    <box-icon name='user' color='#fff' class='mr-2'></box-icon> 
+                    Log in
+                  </a>
+              
+                  <button
+                    class='px-4 py-2.5 text-sm rounded font-bold text-white border-2 border-[#1d294f] bg-[#1d294f] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-teal-400 flex items-center'>
+                    <box-icon name='rocket' color='#fff' class='mr-2'></box-icon>
+                    <a href="{% url 'signup' %}" class="text-white hover:text-teal-400">Get Started</a>
+                  </button>
+                {% endif %}
+              
+                <!-- Menu icon for mobile view -->
+                <button id="toggleOpen" class='lg:hidden text-gray-300'>
+                  <box-icon name='menu' color='#fff'></box-icon>
+                </button>
+              </div>
+              
+    </header>
+
+    {% block content %}
+    <!-- Page content goes here -->
+    {% endblock %}
+
+
+    <footer class="bg-[#0d2329] tracking-wide">
+        <div class="py-12 px-12">
+            <div class="flex flex-wrap items-center sm:justify-between max-sm:flex-col gap-6">
+                <div>
+                    <a href='javascript:void(0)'><img src="https://i.postimg.cc/3xGXxqt8/E-care-3-Final.png" alt="logo"
+                            class='w-44 ' /></a>
+                </div>
+
+                <ul class="flex items-center justify-center flex-wrap gap-y-2 md:justify-end space-x-6">
+                    <li><a href="javascript:void(0)" class="text-gray-300 hover:underline text-base">Home</a></li>
+                    <li><a href="javascript:void(0)" class="text-gray-300 hover:underline text-base">About</a></li>
+                    <li><a href="javascript:void(0)" class="text-gray-300 hover:underline text-base">Services</a></li>
+                    <li><a href="javascript:void(0)" class="text-gray-300 hover:underline text-base">Contact</a></li>
+                </ul>
+            </div>
+
+            <hr class="my-6 border-gray-500" />
+
+            <p class='text-center text-gray-300 text-base'>© E-Medicine Store. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle for mobile menu
+        document.getElementById('toggleOpen').onclick = function () {
+            document.getElementById('collapseMenu').classList.remove('max-lg:hidden');
+        }
+        document.getElementById('toggleClose').onclick = function () {
+            document.getElementById('collapseMenu').classList.add('max-lg:hidden');
+        }
+    </script>
+
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+</body>
+
+</html>

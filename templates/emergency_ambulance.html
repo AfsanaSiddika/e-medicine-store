@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ title }}</h1>
+            <p class="text-lg text-gray-600">Find ambulance contacts for all 64 districts of Bangladesh</p>
+
+            <!-- Search Bar -->
+            <div class="mt-6 max-w-md mx-auto relative">
+                <div class="relative">
+                    <input type="text" id="districtSearch" placeholder="Search your district (e.g. Dhaka, Chittagong)..."
+                           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent shadow-sm">
+                    <box-icon name='search' color="#6b7280" class="absolute right-3 top-3"></box-icon>
+                </div>
+                <p id="searchResultsCount" class="text-sm text-gray-500 mt-2 hidden">Found <span class="font-medium">0</span> services</p>
+            </div>
+        </div>
+
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="p-6 sm:p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-red-600">District-wise Ambulance Services</h2>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-gray-500">Total: 64 districts</span>
+                    </div>
+                </div>
+
+                <!-- Districts Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="ambulanceGrid">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Emergency Notice -->
+            <div class="bg-gray-50 px-6 py-4 sm:px-8 border-t">
+                <div class="flex items-start">
+                    <box-icon name='info-circle' type='solid' color="#3b82f6" class="mt-1 mr-2 flex-shrink-0"></box-icon>
+                    <div>
+                        <p class="text-sm text-gray-600">
+                            <span class="font-semibold">Emergency Numbers:</span>
+                            For life-threatening emergencies, call <span class="text-red-600 font-medium">999</span> (National Emergency Service) or
+                            <span class="text-red-600 font-medium">16263</span> (Health Helpline).
+                        </p>
+                        <p class="text-xs text-gray-500 mt-2">* Contact numbers are randomly generated for demonstration. Verify with local authorities.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const grid = document.getElementById('ambulanceGrid');
+    const searchInput = document.getElementById('districtSearch');
+    const resultsCount = document.getElementById('searchResultsCount');
+
+    // Function to render ambulance cards
+    function renderAmbulances(ambulances) {
+        grid.innerHTML = ambulances.map(service => `
+            <div class="district-card border border-gray-200 rounded-lg p-4 hover:bg-red-50 transition-all">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-medium text-gray-900">${service.name}</h3>
+                        <p class="text-sm text-gray-500 mt-1">${service.district}</p>
+                        ${service.area ? `<p class="text-xs text-gray-400 mt-1">${service.area}</p>` : ''}
+                    </div>
+                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">${service.type}</span>
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <box-icon name='phone' size="xs" color="#6b7280" class="mr-1"></box-icon>
+                            ${service.phone}
+                        </div>
+                        ${service.phone2 ? `
+                        <div class="flex items-center text-sm text-gray-600 mt-1">
+                            <box-icon name='phone' size="xs" color="#6b7280" class="mr-1"></box-icon>
+                            ${service.phone2}
+                        </div>` : ''}
+                    </div>
+                    <a href="tel:${service.phone}"
+                       class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg flex items-center text-sm">
+                        <box-icon name='phone' size="xs" color="#ffffff" class="mr-1"></box-icon>
+                        Call
+                    </a>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Initial load - show all
+    fetchAmbulanceData('');
+
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        fetchAmbulanceData(query);
+    });
+
+    function fetchAmbulanceData(query) {
+        fetch(`?q=${encodeURIComponent(query)}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            renderAmbulances(data.ambulances);
+            updateResultsCount(data.ambulances.length, query);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function updateResultsCount(count, query) {
+        if (query) {
+            resultsCount.classList.remove('hidden');
+            resultsCount.querySelector('span').textContent = count;
+        } else {
+            resultsCount.classList.add('hidden');
+        }
+    }
+});
+</script>
+
+<style>
+    .district-card {
+        transition: all 0.2s ease;
+    }
+    .district-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    #searchResultsCount span {
+        color: #EF4444;
+    }
+</style>
+{% endblock %}

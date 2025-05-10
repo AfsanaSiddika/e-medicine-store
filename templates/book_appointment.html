@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}
+Book Appointment
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-12 min-h-screen">
+    <div class="p-8 bg-white rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold text-teal-600 mb-4 flex items-center">
+            <box-icon name='user' color='#4fd1c5' class='mr-2'></box-icon>
+            {{ doctor.name }} - {{ schedule.hospital.name }}
+        </h2>
+        <p class="text-lg flex items-center">
+            <box-icon name='time' color='#4fd1c5' class='mr-2'></box-icon>
+            Time: {{ schedule.start_time }} - {{ schedule.end_time }}
+        </p>
+        <p class="text-lg flex items-center mt-2">
+            <box-icon name='dollar-circle' color='#4fd1c5' class='mr-2'></box-icon>
+            Fee: ৳ {{ schedule.fee }}
+        </p>
+
+        <form method="POST" class="mt-8 space-y-6">
+            {% csrf_token %}
+            <div>
+                <label for="date" class="block text-md font-medium text-gray-700 flex items-center">
+                    <box-icon name='calendar' color='#4fd1c5' class='mr-2'></box-icon>
+                    Select Date
+                </label>
+                <input type="date" id="date" name="date" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm py-4 p-4 border-b-2">
+            </div>
+
+            <div>
+                <label for="time" class="block text-md font-medium text-gray-700 flex items-center">
+                    <box-icon name='time-five' color='#4fd1c5' class='mr-2'></box-icon>
+                    Select Time
+                </label>
+                <input type="time" id="time" name="time" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm py-4 p-4 border-b-2">
+            </div>
+
+            <div>
+                <label for="contact" class="block text-md font-medium text-gray-700 flex items-center">
+                    <box-icon name='phone' color='#4fd1c5' class='mr-2'></box-icon>
+                    Contact Information
+                </label>
+                <input type="text" id="contact" name="contact" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm py-4 p-4 border-b-2" placeholder="Your phone number">
+            </div>
+
+            <button type="submit" class="mt-6 w-full bg-teal-500 text-white py-3 rounded-md hover:bg-teal-800 flex items-center justify-center">
+                <box-icon name='check-circle' color='#fff' class='mr-2'></box-icon>
+                Confirm Appointment
+            </button>
+
+            <!-- Display error message if exists -->
+        {% if error_message %}
+        <div class="mt-4 text-red-600 text-center">
+            {{ error_message }}
+        </div>
+        {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

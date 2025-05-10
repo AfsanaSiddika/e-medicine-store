@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Form to Book a Lab Test -->
+    <div class="card shadow p-4 mb-4">
+        <h2 class="text-center mb-4">Book a Lab Test</h2>
+        <form method="POST" action="/book-lab-test">
+            <div class="form-group">
+                <label for="testSelect">Select Test:</label>
+                <select class="form-control" id="testSelect" name="testSelect" required>
+                    <option value="">--Please choose an option--</option>
+                    <option value="CBC">Complete blood count (CBC)</option>
+                    <option value="ALT">Alanine transaminase (ALT)</option>
+                    <option value="TSH">Thyroid stimulating hormone (TSH)</option>
+                    <option value="TgAb">Thyroglobulin antibodies (TgAb)</option>
+                    <option value="Glucose">Blood sugar (glucose) tests</option>
+                    <option value="B12">Vitamin B12</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+            <div class="form-group">
+                <label for="time">Time Slot:</label>
+                <input type="time" class="form-control" id="time" name="time" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Book Test</button>
+        </form>
+    </div>
+
+    <!-- Display Existing Bookings -->
+    <div class="card shadow p-4">
+        <h2 class="text-center mb-4">Your Lab Bookings</h2>
+
+        {% if bookings %}
+            <ul class="list-group" id="booking-list">
+                {% for booking in bookings %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center booking-item">
+                        <div>
+                            <strong>{{ booking.test.name }}</strong>
+                            <br>
+                            📅 {{ booking.date }} | 🕒 {{ booking.time_slot }}
+                        </div>
+                        <span class="badge badge-primary badge-pill">Booked</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-center text-muted" id="empty-state">No lab tests booked yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .card {
+        max-width: 700px;
+        margin: auto;
+        border-radius: 10px;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover {
+        transform: scale(1.02);
+    }
+
+    h2 {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .list-group-item {
+        border-radius: 5px;
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    .list-group-item:hover {
+        background: #e9ecef;
+        transform: scale(1.02);
+    }
+
+    .badge-primary {
+        background-color: #007bff;
+        transition: background-color 0.3s;
+    }
+
+    .badge-primary:hover {
+        background-color: #0056b3;
+    }
+
+    #empty-state {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    #empty-state.show {
+        opacity: 1;
+    }
+
+    .list-group {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .list-group.show {
+        opacity: 1;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const bookingList = document.getElementById("booking-list");
+        const emptyState = document.getElementById("empty-state");
+
+        // Add smooth transition to the list or empty state
+        if (bookingList && bookingList.children.length > 0) {
+            bookingList.classList.add("show");
+        } else {
+            emptyState.classList.add("show");
+        }
+
+        // Add hover effect to list items
+        const bookingItems = document.querySelectorAll('.booking-item');
+        bookingItems.forEach(item => {
+            item.addEventListener('mouseenter', function () {
+                item.style.transform = 'scale(1.05)';
+            });
+            item.addEventListener('mouseleave', function () {
+                item.style.transform = 'scale(1)';
+            });
+        });
+    });
+</script>
+
+{% endblock %}

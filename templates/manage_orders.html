@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}
+Manage Orders
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-12 min-h-screen">
+    <h2 class="text-3xl font-bold text-teal-600 mb-6">Manage Your Orders</h2>
+
+    {% if orders %}
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            {% for order in orders %}
+            <div class="border-b py-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-lg font-semibold"><strong>Order ID:</strong> #{{ order.id }}</p>
+                        <p class="text-sm text-gray-500"><strong>Ordered At:</strong> {{ order.ordered_at }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-lg font-semibold text-teal-600"><strong>Total:</strong> ৳{{ order.total }}</p>
+                        <p class="text-sm font-semibold {% if order.status == 'completed' %}text-green-600{% elif order.status == 'cancelled' %}text-red-600{% else %}text-yellow-600{% endif %}">
+                            <strong>Delivery Status:</strong> {{ order.get_status_display }}
+                        </p>
+                    </div>
+                </div>
+                <!-- Delivery Status Progress Indicator -->
+                <div class="flex justify-between items-center mt-4">
+                  <div class="{% if order.status in 'pending processing shipped out_for_delivery delivered' %}text-green-600{% else %}text-gray-400{% endif %}">
+                    Pending
+                  </div>
+                  <div class="{% if order.status in 'processing shipped out_for_delivery delivered' %}text-green-600{% else %}text-gray-400{% endif %}">
+                    Processing
+                  </div>
+                  <div class="{% if order.status in 'shipped out_for_delivery delivered' %}text-green-600{% else %}text-gray-400{% endif %}">
+                    Shipped
+                  </div>
+                  <div class="{% if order.status in 'out_for_delivery delivered' %}text-green-600{% else %}text-gray-400{% endif %}">
+                    Out for Delivery
+                  </div>
+                  <div class="{% if order.status == 'delivered' %}text-green-600{% else %}text-gray-400{% endif %}">
+                    Delivered
+                  </div>
+                </div>
+                <div class="mt-4">
+                    <h3 class="text-lg font-bold text-gray-800">Order Items</h3>
+                    <ul class="mt-2 space-y-2">
+                        {% for item in order.order_items.all %}
+                        <li class="flex justify-between items-center bg-gray-50 p-4 rounded-md shadow-sm">
+                            <div>
+                                <p class="text-gray-800">{{ item.medicine.name }}</p>
+                                <p class="text-sm text-gray-500">Quantity: {{ item.quantity }} pcs</p>
+                            </div>
+                            <p class="text-gray-800">৳{{ item.medicine.price }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-gray-500 text-lg">You have no orders yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}
+User Profile
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 sm:px-10 mt-12 mb-12 min-h-screen">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-extrabold text-teal-600">User Profile</h1>
+        <p class="mt-4 text-lg text-gray-700">Welcome to your profile. Here you can view and update your information.</p>
+    </div>
+    <div class="grid grid-cols-12 gap-4">
+        <!-- Sidebar Menu -->
+        <aside class="col-span-2">
+            <ul class="space-y-2">
+                <li class="bg-gray-100 p-2 rounded-lg px-4 py-4">
+                    <a href="javascript:void(0);" onclick="showSection('profile-section')"
+                        class="flex items-center text-gray-700 font-semibold hover:text-teal-500">
+                        <box-icon name='user' color='#4fd1c5' class='mr-2'></box-icon>
+                        Profile
+                    </a>
+                </li>
+                <li class="bg-gray-100 p-2 rounded-lg px-4 py-4">
+                    <a href="javascript:void(0);" onclick="showSection('orders-section')"
+                        class="flex items-center text-gray-700 font-semibold hover:text-teal-500">
+                        <box-icon name='cart' color='#4fd1c5' class='mr-2'></box-icon>
+                        Orders
+                    </a>
+                </li>
+                <li class="bg-gray-100 p-2 rounded-lg px-4 py-4">
+                    <a href="javascript:void(0);" onclick="showSection('appointments-section')"
+                        class="flex items-center text-gray-700 font-semibold hover:text-teal-500">
+                        <box-icon name='map' color='#4fd1c5' class='mr-2'></box-icon>
+                        Appointments
+                    </a>
+                </li>
+                <li class="bg-gray-100 p-2 rounded-lg px-4 py-4">
+                    <a href="javascript:void(0);" onclick="showSection('cart-section')"
+                        class="flex items-center text-gray-700 font-semibold hover:text-teal-500">
+                        <box-icon name='shopping-bag' color='#4fd1c5' class='mr-2'></box-icon>
+                        Cart
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Profile Section -->
+        <section id="profile-section" class="col-span-10">
+            <div class="bg-white shadow-md rounded-lg p-8">
+                <div class="flex items-center space-x-8">
+                    <img src="{{ profile.image.url }}" alt="{{ user.username }}" class="w-32 h-32 object-cover rounded-full border-4 border-teal-500">
+                    <div>
+                        <h2 class="text-4xl font-bold text-teal-600 mb-2">{{ user.username }}</h2>
+                        <p class="text-xl text-gray-700">{{ user.email }}</p>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-6">Profile Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                            <p class="text-lg font-semibold text-gray-800"><strong>Phone:</strong> {{ profile.phone }}</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                            <p class="text-lg font-semibold text-gray-800"><strong>Address:</strong> {{ profile.address }}</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                            <p class="text-lg font-semibold text-gray-800"><strong>Joined At:</strong> {{ user.date_joined }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+       <!-- Orders Section -->
+<section id="orders-section" class="col-span-10 hidden">
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-2xl font-bold text-teal-500 mb-6">Order History</h2>
+        {% if orders %}
+            <div class="space-y-6">
+                {% for order in orders %}
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <p class="text-lg font-semibold text-gray-800"><strong>Order ID:</strong> #{{ order.id }}</p>
+                            <p class="text-sm text-gray-500"><strong>Ordered At:</strong> {{ order.ordered_at }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-semibold text-teal-600"><strong>Total:</strong> ৳{{ order.total }}</p>
+                            <p class="text-sm font-semibold {% if order.status == 'completed' %}text-green-600{% elif order.status == 'cancelled' %}text-red-600{% else %}text-yellow-600{% endif %}">
+                                <strong>Status:</strong> {{ order.get_status_display }}
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Order Items</h3>
+                        <ul class="space-y-2">
+                            {% for item in order.order_items.all %}
+                            <li class="flex justify-between items-center bg-gray-50 p-4 rounded-md shadow-sm">
+                                <div>
+                                    <p class="text-gray-800">{{ item.medicine.name }}</p>
+                                    <p class="text-sm text-gray-500">Quantity: {{ item.quantity }} pcs</p>
+                                </div>
+                                <p class="text-gray-800">৳{{ item.medicine.price }}</p>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 text-lg">No orders placed yet.</p>
+        {% endif %}
+    </div>
+</section>
+
+        <!-- Appointments Section -->
+        <section id="appointments-section" class="col-span-10 hidden">
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-teal-500 mb-6">Appointments</h2>
+                {% if appointments %}
+                    <div class="space-y-6">
+                        {% for appointment in appointments %}
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <div>
+                                    <p class="text-lg font-semibold text-gray-800"><strong>Doctor:</strong> {{ appointment.doctor.name }}</p>
+                                    <p class="text-sm text-gray-500"><strong>Specialty:</strong> {{ appointment.doctor.specialty }}</p>
+                                    <p class="text-sm text-gray-500"><strong>Date:</strong> {{ appointment.date }}</p>
+                                    <p class="text-sm text-gray-500"><strong>Time:</strong> {{ appointment.time }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold {% if appointment.status == 'confirmed' %}text-green-600{% elif appointment.status == 'cancelled' %}text-red-600{% else %}text-yellow-600{% endif %}">
+                                        <span>Status:</span> {{ appointment.get_status_display }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800 mb-2">Appointment Details</h3>
+                                <p class="text-sm text-gray-500"><strong>Contact:</strong> {{ appointment.patient_contact }}</p>
+                                
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-gray-500 text-lg">No appointments scheduled yet.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Cart Section -->
+        <section id="cart-section" class="col-span-10 hidden">
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-teal-500 mb-4">Cart</h2>
+                {% if carts %}
+                    <ul>
+                        {% for cart in carts %}
+                        <li class="mb-2">
+                            <p><strong>Medicine:</strong> {{ cart.medicine.name }} | <strong>Quantity:</strong> {{ cart.quantity }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>Your cart is empty.</p>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- JavaScript for section switching -->
+<script>
+    function showSection(sectionId) {
+        // Hide all sections
+        document.getElementById('profile-section').classList.add('hidden');
+        document.getElementById('orders-section').classList.add('hidden');
+        document.getElementById('appointments-section').classList.add('hidden');
+        document.getElementById('cart-section').classList.add('hidden');
+
+        // Show the selected section
+        document.getElementById(sectionId).classList.remove('hidden');
+    }
+
+    // Show the profile section by default
+    showSection('profile-section');
+</script>
+
+
+{% endblock %}

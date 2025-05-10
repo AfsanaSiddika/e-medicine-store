@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}
+Order Confirmation
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-12 min-h-screen">
+    <h2 class="text-3xl font-bold text-teal-600 mb-6">Order Confirmation</h2>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-bold mb-4">Thank you for your order!</h3>
+        <p>Your order ID is: <strong>#{{ order.id }}</strong></p>
+
+        <h4 class="text-lg font-bold text-gray-800 mt-6">Order Summary</h4>
+        <ul class="list-disc ml-6">
+            {% for item in order.order_items.all %}
+            <li>{{ item.medicine.name }} - Quantity: {{ item.quantity }} - Price: ৳{{ item.medicine.price }}</li>
+            {% endfor %}
+        </ul>
+
+        <h4 class="text-lg font-bold text-gray-800 mt-6">Total: ৳{{ order.total }}</h4>
+
+        <a href="{% url 'manage_orders' %}" class="mt-4 inline-block bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-700">Track Your Orders</a>
+    </div>
+</div>
+{% endblock %}

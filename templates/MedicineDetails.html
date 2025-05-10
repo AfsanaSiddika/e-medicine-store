@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ medicine.name }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mx-auto py-10 px-10">
+    <!-- Catchy Header -->
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-extrabold text-teal-600">Discover the Best Medicines for Your Health</h1>
+        <p class="mt-4 text-lg text-gray-700">Get detailed information about our top-quality medicines and make informed decisions for your health.</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="flex items-center">
+            <!-- Product Image -->
+            <img src="{{ medicine.image.url }}" alt="{{ medicine.name }}" class="w-full h-full object-cover rounded-lg">
+            
+            <div class="ml-6">
+                <!-- Product Name -->
+                <h1 class="text-2xl font-bold text-gray-800">{{ medicine.name }} 
+                    <span class="text-sm text-gray-600">- {{ medicine.dosage_mg }} mg</span>
+                </h1>
+                <p class="text-sm text-gray-500">{{ medicine.type }}</p>
+                
+                <!-- Manufacturer -->
+                <p class="mt-2 text-teal-700 text-lg font-semibold">{{ medicine.manufacturer }}</p>
+                 <!-- Product Description -->
+                 <p class="text-gray-600 mt-2 text-xl"> Description: {{ medicine.description }}</p>
+                <!-- Price -->
+                <p class="mt-2 text-lg font-bold text-teal-600 mt-4">Price: ৳ {{ medicine.price }} /piece</p>
+
+                <!-- Add to Cart Button -->
+                <a href="{% url 'add_to_cart' medicine.id %}" class="mt-4 inline-block bg-teal-500 text-white px-6 py-2 rounded-md hover:bg-teal-700 text-lg">Add to Cart</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
